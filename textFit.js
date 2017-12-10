@@ -16,6 +16,8 @@
 (function(root, factory) {
   "use strict";
 
+    // console.log('init options')
+
   // UMD shim
   if (typeof define === "function" && define.amd) {
     // AMD
@@ -45,6 +47,8 @@
 
   return function textFit(els, options) {
 
+    if (!els) return;
+
     if (!options) options = {};
 
     // Extend options.
@@ -56,6 +60,7 @@
         settings[key] = defaultSettings[key];
       }
     }
+    // console.log('[card-text] setting textFit options', options, settings)
 
     // Convert jQuery objects into arrays
     if (typeof els.toArray === "function") {
@@ -85,6 +90,7 @@
       return false;
     }
 
+    // console.log('[card-text] processing element', el)
     // Set textFitted attribute so we know this was processed.
     if(!settings.reProcess){
       el.setAttribute('textFitted', 1);
@@ -153,14 +159,18 @@
 
     // Binary search for best fit
     while (low <= high) {
-      mid = parseInt((low + high) / 2, 10);
+      mid = parseFloat((low + high) / 2, 10);
+      // console.log('[card-text] trying font size', low, high, mid)
       innerSpan.style.fontSize = mid + 'px';
-      if(innerSpan.scrollWidth <= originalWidth && (settings.widthOnly || innerSpan.scrollHeight <= originalHeight)){
+      if(innerSpan.scrollWidth <= originalWidth + 1 && (settings.widthOnly || innerSpan.scrollHeight <= originalHeight + 1)){
         low = mid + 1;
       } else {
         high = mid - 1;
       }
+      // console.log('[card-text] updated', low, high)
+      // console.log('[card-text] params', innerSpan.scrollWidth, originalWidth, settings.widthOnly, innerSpan.scrollHeight, originalHeight)
     }
+    // console.log('[card-text] found it!', mid)
     // Sub 1 at the very end, this is closer to what we wanted.
     innerSpan.style.fontSize = (mid - 1) + 'px';
 
